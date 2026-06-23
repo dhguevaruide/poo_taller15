@@ -1,0 +1,70 @@
+@startuml
+struct Docente{
++ID string
++Nombre string
++Departamento string
++Cargo string
++Antiguedad int
+}
+
+struct Competencia{
++ID string
++Nombre string
++Tipo string
+}
+
+struct Evaluacion{
++ID string
++DocenteID string
++CompetenciaID string
++PuntajeBase float64
++PuntajeFinal float64
+}
+
+
+interface EstrategiaPonderacion{
++Calcular(ctx Contexto) float64
++Aplica(ctx Contexto) bool
++Nombre() string
++Prioridad() int
+}
+
+class ReglaCienciasInvestigacion
+class ReglaDirectorGestion
+class ReglaAntiguedad
+class ReglaCoordinadorAcademica
+class ReglaAdministracionGestion
+
+class Contexto{
++Docente Docente
++Competencia Competencia
++Evaluacion Evaluacion
++ReglasAplicadas []string
+}
+
+EstrategiaPonderacion <|.. ReglaCienciasInvestigacion
+EstrategiaPonderacion <|.. ReglaDirectorGestion
+EstrategiaPonderacion <|.. ReglaAntiguedad
+EstrategiaPonderacion <|.. ReglaCoordinadorAcademica
+EstrategiaPonderacion <|.. ReglaAdministracionGestion
+
+Contexto *-- Docente
+Contexto *-- Competencia
+Contexto *-- Evaluacion
+
+
+class CalculadorReglas{
+-Estrategias []EstrategiaPonderacion
++CalcularPuntajeConReglas()
+}
+
+class ReporteGenerator{
++GenerarReporteJustificado()
+}
+
+
+CalculadorReglas o-- EstrategiaPonderacion
+CalculadorReglas --> Contexto
+ReporteGenerator --> Contexto
+
+@enduml
