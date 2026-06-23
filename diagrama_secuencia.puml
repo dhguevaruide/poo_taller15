@@ -1,0 +1,19 @@
+@startuml
+
+actor Usuario
+
+Usuario -> Main: Ejecuta programa
+Main -> Calculador: CalcularPuntajeConReglas()
+Calculador -> Contexto: crear contexto
+
+loop por cada regla
+    Calculador -> Regla: Aplica()
+    alt aplica
+        Calculador -> Regla: Calcular()
+    end
+end
+
+Calculador --> Main: puntaje final + reglas
+Main -> Usuario: imprime resultados
+
+@enduml

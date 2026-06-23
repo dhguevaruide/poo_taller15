@@ -1,0 +1,53 @@
+@startuml
+
+class Docente {
+  ID
+  Nombre
+  Email
+  Departamento
+  Cargo
+  AniosAntiguedad
+}
+
+class Competencia {
+  ID
+  Nombre
+  Tipo
+}
+
+class Evaluacion {
+  ID
+  PuntajeBase
+  PuntajeTotal
+}
+
+class Contexto {
+  PuntajeActual
+}
+
+interface EstrategiaPonderacion {
+  Calcular()
+  Aplica()
+  Nombre()
+  Prioridad()
+}
+
+class ReglaCienciasInvestigacion
+class ReglaDirectorGestion
+class ReglaCoordinadorAcademica
+class ReglaAdministracionGestion
+
+class Calculador
+
+Docente --> Evaluacion
+Competencia --> Evaluacion
+Evaluacion --> Contexto
+
+EstrategiaPonderacion <|.. ReglaCienciasInvestigacion
+EstrategiaPonderacion <|.. ReglaDirectorGestion
+EstrategiaPonderacion <|.. ReglaCoordinadorAcademica
+EstrategiaPonderacion <|.. ReglaAdministracionGestion
+
+Calculador --> EstrategiaPonderacion
+
+@enduml
