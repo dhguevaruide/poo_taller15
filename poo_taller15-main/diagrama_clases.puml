@@ -1,0 +1,73 @@
+@startuml
+skinparam ClassAttributeIconSize 0
+
+skinparam class {
+    BackgroundColor #F3F3F3
+    BorderColor #2C3E50
+    ArrowColor #34495E
+}
+
+class Docente {
+    ID : string
+    Nombre : string
+    Departamento : string
+    Cargo : string
+    AniosAntiguedad : int
+}
+
+class Competencia {
+    ID : string
+    Nombre : string
+    Tipo : string
+}
+
+class Evaluacion {
+    ID : string
+    DocenteID : string
+    CompetenciaID : string
+    PuntajeBase : float64
+    PuntajeFinal : float64
+}
+
+class Contexto {
+    Docente : Docente
+    Competencia : Competencia
+    Evaluacion : Evaluacion
+    ReglasAplicadas : map[string]bool
+}
+
+interface EstrategiaPonderacion {
+    Calcular(ctx : Contexto, puntaje : float64) : float64
+    Aplica(ctx : Contexto) : bool
+    Nombre() : string
+    Prioridad() : int
+}
+
+class ReglaCienciasInvestigacion {
+}
+
+class ReglaDirectorGestion {
+}
+
+class ReglaAntiguedad {
+}
+
+class ReglaCoordinadorAcademica {
+}
+
+class ReglaAdministracionGestion {
+}
+
+' Relaciones del Contexto con los Structs Originales
+Contexto "1" -- "1" Docente
+Contexto "1" -- "1" Competencia
+Contexto "1" -- "1" Evaluacion
+
+' Implementaciones de la Interfaz (Flechas apuntando a la Interfaz)
+ReglaCienciasInvestigacion ..|> EstrategiaPonderacion
+ReglaDirectorGestion ..|> EstrategiaPonderacion
+ReglaAntiguedad ..|> EstrategiaPonderacion
+ReglaCoordinadorAcademica ..|> EstrategiaPonderacion
+ReglaAdministracionGestion ..|> EstrategiaPonderacion
+
+@enduml
