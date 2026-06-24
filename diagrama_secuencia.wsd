@@ -1,0 +1,41 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+title Diagrama de Secuencia - Patrón Strategy
+
+actor Usuario
+participant Calculador
+participant Contexto
+participant "EstrategiaPonderacion" as Estrategia
+participant ReporteGenerator
+
+' 1. Carga de un docente y sus datos
+Usuario -> Calculador : CalcularPuntajeConReglas(evaluacion)
+
+' 2. Selección de la estrategia según el contexto
+Calculador -> Contexto : Crear Contexto(docente, competencia, evaluacion)
+
+' 3. Aplicación de la estrategia
+loop Por cada estrategia (ordenadas por prioridad)
+    Calculador -> Estrategia : Aplica(ctx)?
+    alt Aplica == true
+        Estrategia --> Calculador : true
+        Calculador -> Estrategia : Calcular(ctx)
+        Estrategia --> Calculador : puntaje modificado
+        Calculador -> Contexto : Registrar regla aplicada
+    else Aplica == false
+        Estrategia --> Calculador : false
+    end
+end
+
+Calculador -> Evaluacion : Actualizar PuntajeFinal
+
+' 4. Generación del reporte justificado
+Calculador -> ReporteGenerator : GenerarReporteJustificado(evaluacion)
+ReporteGenerator --> Calculador : reporte justificado
+
+Calculador --> Usuario : Retorna (puntajeFinal, reglasAplicadas)
+
+@enduml
+
