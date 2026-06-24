@@ -1,0 +1,87 @@
+@startuml
+
+' =============================================
+' PATRÓN STRATEGY - Sistema de Evaluación Docente
+' =============================================
+
+package "Model" {
+    class Docente {
+        +ID string
+        +Nombre string
+        +Departamento string
+        +Cargo string
+        +Antiguedad int
+    }
+
+    class Competencia {
+        +ID string
+        +Nombre string
+        +Tipo string
+    }
+
+    class Evaluacion {
+        +ID string
+        +DocenteID string
+        +CompetenciaID string
+        +PuntajeBase float64
+        +PuntajeFinal float64
+    }
+}
+
+interface EstrategiaPonderacion {
+    +Calcular(ctx Contexto) float64
+    +Aplica(ctx Contexto) bool
+    +Nombre() string
+    +Prioridad() int
+}
+
+package "Strategy" {
+    class Contexto {
+        +Docente Docente
+        +Competencia Competencia
+        +Evaluacion Evaluacion
+        +ReglasAplicadas []string
+    }
+
+    class ReglaCienciasInvestigacion implements EstrategiaPonderacion
+    class ReglaDirectoresGestion implements EstrategiaPonderacion
+    class ReglaAntiguedad implements EstrategiaPonderacion
+    class ReglaCoordinadoresAcademica implements EstrategiaPonderacion
+    class ReglaAdministracionGestion implements EstrategiaPonderacion
+}
+
+package "Engine" {
+    class Calculador {
+        -estrategias []EstrategiaPonderacion
+        +CalcularPuntajeConReglas(e Evaluacion) (float64, []string)
+    }
+
+    class ReporteGenerator {
+        +GenerarReporteJustificado(e Evaluacion) string
+    }
+}
+
+' Relaciones
+Docente "1" --> "1" Contexto : usa
+Competencia "1" --> "1" Contexto : usa
+Evaluacion "1" --> "1" Contexto : usa
+
+Contexto ..> EstrategiaPonderacion : aplica
+
+Calculador *-- "muchas" EstrategiaPonderacion : contiene
+Calculador --> Contexto : crea/usa
+Calculador --> ReporteGenerator : usa
+
+' Notas
+note right of EstrategiaPonderacion
+  Interfaz Strategy
+  Permite agregar nuevas reglas
+  fácilmente
+end note
+
+note bottom of Calculador
+  No usa switch/if-else grande
+  Ordena por Prioridad()
+end note
+
+@enduml
